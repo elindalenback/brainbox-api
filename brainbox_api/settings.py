@@ -33,9 +33,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-zt#*b!tyue3-(-_y8%+v6-twwpgg7wyu-fm&b4fpp2uh=#=b(x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io','.herokuapp.com',]
 
 
 # Application definition
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
+    'rest_framework',
+
     'profiles',
 ]
 
