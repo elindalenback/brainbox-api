@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'profiles',
+    'notes',
+    'tags',
+    'notebooks',
 ]
 
 MIDDLEWARE = [
