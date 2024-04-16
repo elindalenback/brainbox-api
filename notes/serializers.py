@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Note
+from tags.models import Tag
 from tags.serializers import TagSerializer
 
 class NoteSerializer(serializers.ModelSerializer):
@@ -7,7 +8,11 @@ class NoteSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    tags = TagSerializer(many=True)
+    tags = serializers.SlugRelatedField(
+        many=True,
+        slug_field='name',
+        queryset=Tag.objects.all()
+    )
     notebook = 'NotebookSerializer'
 
     def get_is_owner(self, obj):

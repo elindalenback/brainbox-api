@@ -4,7 +4,7 @@ from notes.serializers import NoteSerializer
 
 class NotebookSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    notes = NoteSerializer(many=True, read_only=True)
+    notes = serializers.StringRelatedField(many=True, read_only=True)
     is_owner = serializers.SerializerMethodField()
 
     def get_is_owner(self, obj):

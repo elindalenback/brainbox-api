@@ -1,9 +1,11 @@
+from django.shortcuts import render
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.apps import apps
+
 from .models import Note
 from .serializers import NoteSerializer
-from notebooks.serializers import NotebookSerializer
 
 
 class NoteList(APIView):
