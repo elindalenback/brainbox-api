@@ -5,6 +5,11 @@ from notes.serializers import NoteSerializer
 class NotebookSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     notes = NoteSerializer(many=True, read_only=True)
+    is_owner = serializers.SerializerMethodField()
+
+    def get_is_owner(self, obj):
+        request = self.context['request']
+        return request.user == obj.owner
 
     def validate_folder_image(self, value):
         if value.size > 2 * 1024 * 1024:
@@ -21,4 +26,4 @@ class NotebookSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Notebook
-        fields = ['id', 'owner', 'name', 'folder_image', 'notes']
+        fields = ['id', 'owner', 'name', 'folder_image', 'notes', 'is_owner']
