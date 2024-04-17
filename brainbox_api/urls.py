@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('profiles.urls')),
     path('', include('notes.urls')),
     path('', include('tags.urls')),
+    path('', include('comments.urls')),
 ]
