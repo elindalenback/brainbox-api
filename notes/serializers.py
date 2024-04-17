@@ -16,6 +16,8 @@ class NoteSerializer(serializers.ModelSerializer):
     )
     notebook = 'NotebookSerializer'
     like_id = serializers.SerializerMethodField()
+    likes_count = serializers.ReadOnlyField()
+    comments_count = serializers.ReadOnlyField()
 
     def get_is_owner(self, obj):
         request = self.context['request']
@@ -35,5 +37,6 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'is_owner', 'profile_id',
             'profile_image', 'created_at', 'updated_at',
-            'title', 'content', 'tags', 'notebook', 'deleted', 'like_id',
+            'title', 'content', 'tags', 'notebook', 'deleted',
+            'like_id', 'likes_count', 'comments_count',
         ]
