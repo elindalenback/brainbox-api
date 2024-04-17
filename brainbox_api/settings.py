@@ -51,13 +51,13 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
 
-    'profiles',
-    'notes',
-    'tags',
-    'notebooks',
     'comments',
-    'likes',
     'followers',
+    'likes',
+    'notebooks',
+    'notes',
+    'profiles',
+    'tags',
 ]
 
 MIDDLEWARE = [
