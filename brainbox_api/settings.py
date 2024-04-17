@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'notes',
     'tags',
     'notebooks',
+    'comments'
 ]
 
 MIDDLEWARE = [
