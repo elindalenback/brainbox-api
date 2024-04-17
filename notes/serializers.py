@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Note
 from tags.models import Tag
+from notebooks.models import Notebook
 from tags.serializers import TagSerializer
 from likes.models import Like
 
@@ -14,7 +15,11 @@ class NoteSerializer(serializers.ModelSerializer):
         slug_field='name',
         queryset=Tag.objects.all()
     )
-    notebook = 'NotebookSerializer'
+    notebook = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=Notebook.objects.all()
+    )
+
     like_id = serializers.SerializerMethodField()
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
