@@ -61,11 +61,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io', 'brain-box.herokuapp.com',]
+ALLOWED_HOSTS = ['8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io', 'brain-box-c3ea3510445f.herokuapp.com',]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io',
-    'https://brain-box.herokuapp.com',
+    'https://brain-box-c3ea3510445f.herokuapp.com',
 ]
 
 # Application definition
