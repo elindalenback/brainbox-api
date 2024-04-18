@@ -37,6 +37,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io','.herokuapp.com',]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-elindalenba-brainboxapi-veqs9tw81tl.ws-eu110.gitpod.io',
+]
 
 # Application definition
 
@@ -50,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'rest_framework',
+    'django_filters',
 
     'comments',
     'followers',
