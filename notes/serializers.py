@@ -13,11 +13,16 @@ class NoteSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field='name',
-        queryset=Tag.objects.all()
+        queryset=Tag.objects.all(),
+        allow_empty=True,
+        required=False
     )
+    
     notebook = serializers.SlugRelatedField(
         slug_field='name',
-        queryset=Notebook.objects.all()
+        queryset=Notebook.objects.all(),
+        allow_null=True,
+        required=False
     )
 
     like_id = serializers.SerializerMethodField()
