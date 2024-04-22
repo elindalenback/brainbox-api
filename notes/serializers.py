@@ -12,7 +12,7 @@ class NoteSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     tags = serializers.SlugRelatedField(
         many=True,
-        slug_field='name',
+        slug_field='id',
         queryset=Tag.objects.all(),
         allow_empty=True,
         required=False
