@@ -10,13 +10,6 @@ class NoteSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    tags = serializers.SlugRelatedField(
-        many=True,
-        slug_field='id',
-        queryset=Tag.objects.all(),
-        allow_empty=True,
-        required=False
-    )
     
     notebook = serializers.SlugRelatedField(
         slug_field='name',
@@ -24,7 +17,7 @@ class NoteSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False
     )
-
+    tags_data = serializers.SerializerMethodField()
     like_id = serializers.SerializerMethodField()
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
@@ -42,11 +35,19 @@ class NoteSerializer(serializers.ModelSerializer):
             return like.id if like else None
         return None
 
+    def get_tags_data(self, obj):
+        if obj.tags:
+            tags = Tag.objects.filter(
+                id__in=obj.tags.values_list('id', flat=True)
+            )
+            return TagSerializer(tags, many=True).data
+        return []
+
     class Meta:
         model = Note
         fields = [
             'id', 'owner', 'is_owner', 'profile_id',
             'profile_image', 'created_at', 'updated_at',
-            'title', 'content', 'tags', 'notebook', 'deleted',
-            'like_id', 'likes_count', 'comments_count',
+            'title', 'content', 'notebook', 'deleted',
+            'like_id', 'likes_count', 'comments_count', 'tags_data',
         ]
