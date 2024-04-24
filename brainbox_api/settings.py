@@ -115,7 +115,7 @@ INSTALLED_APPS = [
     'likes',
     'notebooks',
     'notes',
-    'poll',
+    'polls',
     'profiles',
     'tags',
 ]

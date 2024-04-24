@@ -30,7 +30,7 @@ urlpatterns = [
     path('', include('likes.urls')),
     path('', include('notebooks.urls')),
     path('', include('notes.urls')),
-    path('', include('poll.urls')),
+    path('', include('polls.urls')),
     path('', include('profiles.urls')),
     path('', include('tags.urls')),
 ]

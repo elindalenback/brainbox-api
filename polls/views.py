@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from .models import Question, Choice
 from .serializers import QuestionSerializer, ChoiceSerializer
@@ -42,7 +43,7 @@ class ChoiceList(generics.ListCreateAPIView):
     def get_queryset(self):
         question_id = self.kwargs['question_id']
         question = get_object_or_404(Question, pk=question_id)
-        return question.choice_set.all()
+        return question.choices.all()  # Use the related_name 'choices' here
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -60,6 +61,7 @@ class ChoiceList(generics.ListCreateAPIView):
             logger.error("Error creating choice: %s", e)
             return JsonResponse({"error": "Failed to create choice"}, status=400)
 
+
 class ChoiceDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a choice for a specific question.
@@ -69,8 +71,9 @@ class ChoiceDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         question_id = self.kwargs['question_id']
-        question = get_object_or_404(Question, pk=question_id)
-        return question.choice_set.all()
+        choice_id = self.kwargs['pk']
+        # Query the Choice objects associated with the given Question object
+        return Choice.objects.filter(question_id=question_id, id=choice_id)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -83,9 +86,9 @@ class ChoiceDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return JsonResponse(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return JsonResponse({"message": "Choice deleted successfully"}, status=204)
+        for user_id in request.data['users']:
+            user = User.objects.get(pk=user_id)
+            instance.users.add(user)
+        instance.save()
+        return_data = self.get_serializer(instance)
+        return JsonResponse(return_data.data)

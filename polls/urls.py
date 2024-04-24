@@ -1,5 +1,5 @@
 from django.urls import path
-from poll import views
+from polls import views
 
 urlpatterns = [
     path('questions/', views.QuestionList.as_view(), name='question-list'),
