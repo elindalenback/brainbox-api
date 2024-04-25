@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'notes',
     'polls',
     'profiles',
+    'reports',
     'tags',
 ]
 
