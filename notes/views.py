@@ -13,7 +13,7 @@ class NoteList(generics.ListCreateAPIView):
     """
     serializer_class = NoteSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Note.objects.annotate(
+    queryset = Note.objects.filter(deleted=False).annotate(
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
