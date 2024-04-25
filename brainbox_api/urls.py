@@ -34,5 +34,6 @@ urlpatterns = [
     path('', include('notes.urls')),
     path('', include('polls.urls')),
     path('', include('profiles.urls')),
+    path('', include('reports.urls')),
     path('', include('tags.urls')),
 ]
