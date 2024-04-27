@@ -42,7 +42,6 @@ class NoteList(generics.ListCreateAPIView):
         'likes__created_at',
     ]
 
-
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 

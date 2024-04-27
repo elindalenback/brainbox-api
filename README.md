@@ -178,3 +178,14 @@ The application utilizes a relational database structured around Django models. 
 
 - **Tag**: Used for categorizing notes, featuring a simple model with just a name for each tag. It establishes a many-to-many relationship with the Note model.
 
+## Testing
+
+All endpoints underwent manual testing during the development phase by accessing the URLs directly. The API was rigorously evaluated through various request types (GET, POST, PUT, DELETE) both during development and in the production environment, as initiated from the Front End Application.
+
+### Python Linter (PEP 8)
+
+Only the files containing custom Python code were subjected to testing:
+
+- In settings.py, five instances of the 'E501 line too long' error were identified. In these specific cases, it was deemed acceptable not to break the line.
+- For all other files, the result was "All clear, no errors found".
+

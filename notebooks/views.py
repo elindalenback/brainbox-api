@@ -3,6 +3,7 @@ from brainbox_api.permissions import IsOwnerOrReadOnly
 from .models import Notebook
 from .serializers import NotebookSerializer
 
+
 class NotebookList(generics.ListCreateAPIView):
     """
     List all notebooks or create a notebook if logged in.

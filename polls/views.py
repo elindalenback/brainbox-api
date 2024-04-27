@@ -5,6 +5,7 @@ from rest_framework import generics, permissions
 from .models import Question, Choice
 from .serializers import QuestionSerializer, ChoiceSerializer
 
+
 class QuestionList(generics.ListCreateAPIView):
     """
     List questions or create a new question.
@@ -17,6 +18,7 @@ class QuestionList(generics.ListCreateAPIView):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return JsonResponse(serializer.data, safe=False)
+
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -32,6 +34,7 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return JsonResponse(serializer.data)
+
 
 class ChoiceList(generics.ListCreateAPIView):
     """
@@ -59,7 +62,8 @@ class ChoiceList(generics.ListCreateAPIView):
             return JsonResponse(serializer.data, status=201, headers=headers)
         except Exception as e:
             logger.error("Error creating choice: %s", e)
-            return JsonResponse({"error": "Failed to create choice"}, status=400)
+            return JsonResponse({"error": "Failed to create choice"},
+                                status=400)
 
 
 class ChoiceDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -83,7 +87,8 @@ class ChoiceDetail(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data,
+                                         partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         for user_id in request.data['users']:

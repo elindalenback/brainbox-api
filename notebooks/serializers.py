@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Notebook
 from notes.serializers import NoteSerializer
 
+
 class NotebookSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     notes = serializers.StringRelatedField(many=True, read_only=True)
@@ -23,7 +24,7 @@ class NotebookSerializer(serializers.ModelSerializer):
                 'Image width larger than 4096px!'
             )
         return value
-    
+
     class Meta:
         model = Notebook
         fields = ['id', 'owner', 'name', 'folder_image', 'notes', 'is_owner']

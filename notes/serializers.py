@@ -5,12 +5,13 @@ from notebooks.models import Notebook
 from tags.serializers import TagSerializer
 from likes.models import Like
 
+
 class NoteSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    
+
     notebook = serializers.SlugRelatedField(
         slug_field='name',
         queryset=Notebook.objects.all(),
