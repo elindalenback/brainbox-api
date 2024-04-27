@@ -186,6 +186,193 @@ All endpoints underwent manual testing during the development phase by accessing
 
 Only the files containing custom Python code were subjected to testing:
 
-- In settings.py, five instances of the 'E501 line too long' error were identified. In these specific cases, it was deemed acceptable not to break the line.
-- For all other files, the result was "All clear, no errors found".
+- In settings.py, one instance of the 'E501 line too long' error were identified. In this specific cases, it was deemed acceptable not to break the line.
+- For all other files, the result was *"All clear, no errors found".*
 
+## Technologies used
+
+The project is developed in Python.
+
+### Frameworks
+
+- Django and Django REST Framework for creating the web API.
+
+### Libraries and Packages
+
+- Gunicorn for handling web requests.
+- dj-database-url for configuring database management.
+- django-cors-headers for managing server headers required for Cross-Origin Resource Sharing (CORS).
+- django-filter for allowing users to filter querysets dynamically.
+- Pillow for image processing.
+- psycopg2 as an adapter used for database connectivity.
+- PyJWT for encoding and decoding JSON Web Tokens (JWT).
+- Django Allauth and Dj-Rest-Auth for handling user authentication, registration, and account management.
+- cloudinary for managing media assets.
+
+### Database
+
+- ElephantSQL as the PostgreSQL database used in production.
+
+### Hosting
+
+- Heroku for hosting and deploying the application.
+
+### Other Technologies
+
+- Git for version control.
+- GitHub for hosting the code.
+- Gitpod as the IDE used to develop the website.
+- Lucidchart for creating the ERD.
+
+The [requirements.txt](requirements.txt) file specifies the full list of packages and their versions of these packages.
+
+## Deployment
+
+This site has been deployed to Heroku, using ElephantSQL database and Cloudinary, following these steps:
+
+1. **Installing Django and Supporting Libraries**
+
+    - Install Django, Django REST Framework, and Gunicorn: `pip install Django djangorestframework gunicorn`
+    - Install supporting database libraries: `pip install dj-database-url psycopg2`
+    - Install Cloudinary libraries: `pip install django-cloudinary-storage`
+    - Install Pillow: `pip install Pillow`
+    - Create requirements.txt: `pip freeze > requirements.txt`
+    - Create Django project: `django-admin startproject projectname`
+    - Create first app: `python manage.py startapp appname`
+    - Add app to installed apps in settings.py file
+    - Migrate changes: `python manage.py migrate`
+    - Run the server to test if the app is installed: `python manage.py runserver`
+
+2. **Create the Heroku App**
+   
+    - Log into Heroku and go to the Dashboard
+    - Click “New" and then “Create new app”
+    - Choose an app name and select the region closest to you. Then, click “Create app” to confirm.
+
+3. **Create an External Database with ElephantSQL**
+
+    - Log into ElephantSQL
+    - Click "Create New Instance"
+    - Set up a plan by giving a Name and selecting a Plan
+    - Click "Select Region" and choose a Data center
+    - Click "Review", check all details and click "Create Instance"
+    - Return to the Dashboard and click on the database instance name
+    - Copy the database URL
+
+4. **Create an env.py File to Avoid Exposing Sensitive Information**
+
+    - In the project workspace, create a file called env.py. Check that the file name is included in the .gitignore file
+    - Add `import os` to env.py file and set environment variable DATABASE_URL to the URL copied from ElephantSQL `os.environ["DATABASE_URL"]="<copiedURL>"`
+    - Add a SECRET_KEY environment variable `os.environ["SECRET_KEY"]="mysecretkey"`
+    - Add CLIENT_ORIGIN and CLIENT_ORIGIN_DEV environment variables as needed.
+    
+5. **Update settings.py**
+
+    - Add the following code below the path import in `settings.py` to connect the Django project to env.py:
+        ```python
+        import os
+        if os.path.exists("env.py"):
+            import env
+        ```
+    - Remove the secret key provided by Django in settings.py and refer to variable in env.py instead (`SECRET_KEY = os.environ.get('SECRET_KEY')`)
+    - Create a new variable called DEV at the top of settings.py to keep using the sqlite database in the development environment and turn Debug on, but off in production, and use the ElephantSQL database:
+        ```python
+        development = os.environ.get('DEV', False)
+        ```
+    - To connect to the new database for production and keep sqlite for development, replace the provided DATABASE variable with:
+        ```python
+        if development:
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': BASE_DIR / 'db.sqlite3',
+                }
+            }
+        else:
+            DATABASES = {
+                'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+            }
+        ```
+
+6. **Heroku Config Vars**
+
+    - Go back to Heroku dashboard and open the Settings tab
+    - Add config vars:
+        - DATABASE_URL -> value of the database url
+        - SECRET_KEY -> value of the secret key string
+        - DISABLE_COLLECTSTATIC -> 1
+        - ALLOWED_HOSTS -> value of the deployed Heroku app url
+        - Add CLIENT_ORIGIN and CLIENT_ORIGIN_DEV as needed.
+
+7. **Set Up Cloudinary for Static and Media Files Storage**
+
+    - In the Cloudinary dashboard, copy the API Environment variable
+    - In `env.py` file, add new variable `os.environ["CLOUDINARY_URL"] = "<copied_variable>"`, without "CLOUDINARY_URL="
+    - Add the same variable value as new Heroku config var named CLOUDINARY_URL
+    - In `settings.py`, in the INSTALLED_APPS list, above `django.contrib.staticfiles`, add `cloudinary_storage`, and below add `cloudinary`
+    - Connect Cloudinary to the Django app in settings.py:
+        ```python
+        CLOUDINARY_STORAGE = {
+            'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+        }
+        MEDIA_URL = '/media/'
+        DEFAULT_SITE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+        ```
+    - Add Heroku Hostname to ALLOWED_HOSTS:
+        ```python
+        if development:
+            ALLOWED_HOSTS = [os.environ.get('LOCALHOST')]
+        else:
+            ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
+        ```
+
+8. **Add JWT to the Project**
+
+    - Install `dj-rest-auth` and `dj-rest-auth[with_social]`: `pip install dj-rest-auth dj-rest-auth[with_social]`
+    - Add to installed apps in settings.py:
+        ```python
+        'rest_framework.authtoken',
+        'dj_rest_auth',
+        'django.contrib.sites',
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+        'dj_rest_auth.registration',
+        ```
+    - Install `djangorestframework-simplejwt`: `pip install djangorestframework-simplejwt`
+    - Add authentication method to settings.py:
+        ```python
+        REST_FRAMEWORK = {
+            'DEFAULT_AUTHENTICATION_CLASSES': [(
+                'rest_framework.authentication.SessionAuthentication'
+                if 'DEV' in os.environ
+                else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+            )],
+        }
+        ```
+        ```python
+        REST_USE_JWT = True
+        JWT_AUTH_SECURE = True
+        JWT_AUTH_COOKIE = 'my-app-auth'
+        JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+        JWT_AUTH_SAMESITE = None
+        ```
+
+9. **Create Procfile**
+
+10. **Heroku Deployment**
+
+    - Click Deploy tab in Heroku
+    - In the 'Deployment method' section select 'Github' and click 'Connect to Github'
+    - In the 'search' field enter the repository name
+    - Connect to link the heroku app with the Github repository
+    - Click "Deploy Branch" or enable "Automatic Deploys"
+
+## Credits
+
+- The project structure, including project setup and the implementation of the notes, profiles, likes, comments, and followers apps, is based on Code Institute's Django REST Framework project [drf-api](https://github.com/Code-Institute-Solutions/drf-api).
+- Deployment steps were adapted from Code Institute's resources.
+- The Reports functionality was inspired by Tiago's implementation in his [Connect](https://github.com/TiagoMA90/connect) project. You can find the Reports app for the backend [here](https://github.com/TiagoMA90/drf-api/tree/main/reports).
+- The Tags functionality was inspired by Javier's implementation in his [hoodsap](https://github.com/fsjavier/hoodsap-api) project. You can find the Tags app for the backend [here](https://github.com/fsjavier/hoodsap-api/tree/main/tags).
+- Special thanks to the tutor support team for their valuable insights and patience.
+- Acknowledgments to fellow student Anton Eriksson for collaborative work and troubleshooting efforts. Thank you!
